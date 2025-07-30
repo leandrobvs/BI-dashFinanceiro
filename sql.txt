@@ -1,3 +1,59 @@
+## Criação do DB
+
 CREATE DATABASE Invest_now;
 GO
 USE Invest_now;
+
+## Criação da tabela DOLAR
+
+CREATE TABLE dolar_bacen (
+    data DATE NOT NULL,
+    valor DECIMAL(10,4) NULL
+)
+
+
+## Criação da tabela Titulos Tesouro
+
+CREATE TABLE titulos_tesouro (
+    codigo_titulo INT PRIMARY KEY,
+    nome_titulo VARCHAR(32) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    valor_minimo_investimento DECIMAL(18, 2) NULL,
+    preco_unitario_compra DECIMAL(18, 2) NULL,
+    recebe_juros_semestrais BIT NULL,
+    taxa_juros_compra DECIMAL(10, 4) NULL,
+    taxa_recompra_tesouro DECIMAL(10, 4) NULL,
+    valor_unitario_recompra DECIMAL(18, 2) NULL,
+    valor_minimo_recompra DECIMAL(18, 2) NULL,
+    codigo_isin VARCHAR(12) NULL,
+    indice_correcao VARCHAR(20) NULL
+)
+
+## Criação da tabela SELIC
+
+CREATE TABLE selic (
+    data DATE NOT NULL,
+    valor DECIMAL(10, 4) NULL
+)
+
+## Criação da tabela IPCA
+
+CREATE TABLE ipca (
+    data DATE NOT NULL,
+    valor DECIMAL(10, 4) NULL
+)
+
+## Criação da tabela IGP-M
+
+CREATE TABLE igpm (
+    data DATE NOT NULL,
+    valor DECIMAL(10, 4) NULL
+)
+
+## Criação da tabela CDI
+
+CREATE TABLE cdi (
+    data DATE NOT NULL,
+    valor DECIMAL(10, 4) NULL
+)
+

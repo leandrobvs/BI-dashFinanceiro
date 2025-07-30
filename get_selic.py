@@ -2,14 +2,18 @@
 import requests
 import pandas as pd
 from datetime import datetime
-import matplotlib.pyplot as plt
-
 
 # %%
 # Configurações fixas
-codigo_serie = 1 
-data_inicial = "01/01/2023"
+codigo_serie = 432 
+data_inicial = "01/01/2020"
 data_final = datetime.today().strftime('%d/%m/%Y')
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7',
+}
 
 # %%
 url = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.{codigo_serie}/dados'
@@ -19,15 +23,15 @@ params = {
     'dataFinal': data_final
 }
 
-response = requests.get(url, params=params)
+response = requests.get(url, params=params, headers=headers)
 
 # %%
 dados = response.json()
-df_dolar = pd.DataFrame(dados)
+df_selic = pd.DataFrame(dados)
 
 # %%
-df_dolar['data'] = pd.to_datetime(df_dolar['data'], format='%d/%m/%Y')
-df_dolar['valor'] = df_dolar['valor'].astype('float')
+df_selic['valor'] = pd.to_numeric(df_selic['valor'], errors='coerce')
+df_selic['data'] = pd.to_datetime(df_selic['data'], format='%d/%m/%Y')
 
 # %%
 from dotenv import load_dotenv
@@ -47,17 +51,13 @@ sql_driver = os.getenv('sql_driver')
 
 
 # %%
-
-
 conn_str = f'mssql+pyodbc://{sql_username}:{sql_password}@{sql_server}/{sql_database}?driver={sql_driver}&TrustServerCertificate=yes'
 
 engine = create_engine(conn_str)
 
-
 # %%
 with engine.begin() as conn:
-    conn.execute(text("TRUNCATE TABLE dolar_bacen"))
-    df_dolar.to_sql('dolar_bacen', con=conn, if_exists='append', index=False)
-
+    conn.execute(text("TRUNCATE TABLE selic"))
+    df_selic.to_sql('selic', con=conn, if_exists='append', index=False)
 
 
